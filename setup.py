@@ -24,7 +24,7 @@ setup(
         'console_scripts': [
             'dasrobot_serial = dasrobot_base_controller.dasrobot_serial_node:main',
             'dasrobot_odom = dasrobot_base_controller.dasrobot_odom_node:main',
-            'dasrobot_cmd_convert = dasrobot_base_controller.dasrobot_cmd_converter_node:main'
+            'dasrobot_cmd_converter = dasrobot_base_controller.dasrobot_cmd_converter_node:main'
         ],
     },
 )

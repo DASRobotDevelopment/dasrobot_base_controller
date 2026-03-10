@@ -11,16 +11,16 @@ class DASRobotCmdConverterNode(Node):
         
         # Параметры
         self.declare_parameter('cmd_vel_topic', '/cmd_vel')
-        self.declare_parameter('wheels_commands_topic', '/serial_commands')
+        self.declare_parameter('wheels_command_topic', '/serial_command')
         self.declare_parameter('max_wheel_rpm', 200)
-        self.declare_parameter('wheel_radius', 0.0325)   # ✅ Радиус колеса!
-        self.declare_parameter('ticks_per_rev', 988)     # ✅ Из odom ноды!
+        self.declare_parameter('wheel_radius', 0.0325)
+        self.declare_parameter('ticks_per_rev', 988)
         self.declare_parameter('wheel_base_x', 0.3)
         self.declare_parameter('wheel_base_y', 0.2)
         
         # Получаем параметры
         self.cmd_vel_topic = self.get_parameter('cmd_vel_topic').value
-        self.wheels_commands_topic = self.get_parameter('wheels_commands_topic').value
+        self.wheels_command_topic = self.get_parameter('wheels_command_topic').value
         self.max_wheel_rpm = self.get_parameter('max_wheel_rpm').value
         self.wheel_radius = self.get_parameter('wheel_radius').value
         self.ticks_per_rev = self.get_parameter('ticks_per_rev').value
@@ -31,11 +31,11 @@ class DASRobotCmdConverterNode(Node):
         self.rpm_per_mps = self.max_wheel_rpm / (2 * math.pi * self.wheel_radius * 60)
         self.robot_radius = math.sqrt((self.wheel_base_x/2)**2 + (self.wheel_base_y/2)**2)
         
-        self.wheels_pub = self.create_publisher(String, self.wheels_commands_topic, 10)
+        self.wheels_pub = self.create_publisher(String, self.wheels_command_topic, 10)
         self.subscription = self.create_subscription(
             Twist, self.cmd_vel_topic, self.cmd_vel_callback, 10)
         
-        self.get_logger().info(f'{self.cmd_vel_topic} → {self.wheels_commands_topic}')
+        self.get_logger().info(f'{self.cmd_vel_topic} → {self.wheels_command_topic}')
         self.get_logger().info(f'wheel_radius={self.wheel_radius}m, max_rpm={self.max_wheel_rpm}')
         self.get_logger().info(f'rpm_per_mps={self.rpm_per_mps:.1f} RPM/(m/s)')
 
