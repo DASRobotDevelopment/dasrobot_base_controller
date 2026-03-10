@@ -11,20 +11,20 @@ class DASRobotSerialNode(Node):
 
         # Параметры
         self.declare_parameter('baudrate', 115200)
-        self.declare_parameter('serial_port_name', '/dev/ttyUSB0')
+        self.declare_parameter('serial_port_id', '/dev/ttyUSB0')
         self.declare_parameter('serial_port_polling_hz', 50)
-        self.declare_parameter('input_topic', '/serial_commands')
-        self.declare_parameter('output_topic', '/serial_response')
+        self.declare_parameter('command_topic', '/serial_commands')
+        self.declare_parameter('response_topic', '/serial_response')
 
         self.baudrate = self.get_parameter('baudrate').value
-        self.serial_port_name = self.get_parameter('serial_port_name').value
+        self.serial_port_id = self.get_parameter('serial_port_id').value
         self.serial_port_polling_hz = self.get_parameter('serial_port_polling_hz').value
-        self.input_topic = self.get_parameter('input_topic').value
-        self.output_topic = self.get_parameter('output_topic').value
+        self.command_topic = self.get_parameter('command_topic').value
+        self.response_topic = self.get_parameter('response_topic').value
 
-        self.get_logger().info(f'Config: port={self.serial_port_name}, '
+        self.get_logger().info(f'Config: port={self.serial_port_id}, '
                                f'polling={self.serial_port_polling_hz}Hz, '
-                               f'input={self.input_topic}, output={self.output_topic}')
+                               f'command={self.command_topic}, output={self.response_topic}')
         
         # Serial
         self.serial_port = None
@@ -32,12 +32,12 @@ class DASRobotSerialNode(Node):
 
         # Подписка
         self.subscription = self.create_subscription(
-            String, self.input_topic, self.command_callback, 10)
-        self.get_logger().info(f'Subscribed to {self.input_topic}')
+            String, self.command_topic, self.command_callback, 10)
+        self.get_logger().info(f'Subscribed to {self.command_topic}')
 
         # Издатель
-        self.publisher = self.create_publisher(String, self.output_topic, 10)
-        self.get_logger().info(f'Publishing to {self.output_topic}')
+        self.publisher = self.create_publisher(String, self.response_topic, 10)
+        self.get_logger().info(f'Publishing to {self.response_topic}')
 
         # Таймер polling
         self.serial_polling_timer = self.create_timer(
@@ -47,14 +47,14 @@ class DASRobotSerialNode(Node):
     def open_serial_port(self):
         try:
             self.serial_port = serial.Serial(
-                self.serial_port_name, 
+                self.serial_port_id, 
                 self.baudrate, 
                 timeout=0.01,  # ✅ 10мс вместо 1с!
                 bytesize=8,
                 parity='N',
                 stopbits=1)  # Быстрый timeout
             time.sleep(2)
-            self.get_logger().info(f'Serial opened: {self.serial_port_name}')
+            self.get_logger().info(f'Serial opened: {self.serial_port_id}')
         except Exception as e:
             self.get_logger().error(f'Serial open error: {e}')
 
