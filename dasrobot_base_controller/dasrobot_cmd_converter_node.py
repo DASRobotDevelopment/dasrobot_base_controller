@@ -28,7 +28,8 @@ class DASRobotCmdConverterNode(Node):
         self.wheel_base_y = self.get_parameter('wheel_base_y').value
         
         # ✅ ДИНАМИЧЕСКИЙ РАСЧЕТ rpm_per_mps!
-        self.rpm_per_mps = self.max_wheel_rpm / (2 * math.pi * self.wheel_radius * 60)
+        #self.rpm_per_mps = self.max_wheel_rpm / (2 * math.pi * self.wheel_radius * 60)
+        self.rpm_per_mps = 60.0 / (2 * math.pi * self.wheel_radius)
         self.robot_radius = math.sqrt((self.wheel_base_x/2)**2 + (self.wheel_base_y/2)**2)
         
         self.wheels_pub = self.create_publisher(String, self.wheels_command_topic, 10)
