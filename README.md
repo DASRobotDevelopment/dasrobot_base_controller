@@ -29,6 +29,9 @@ ros2 launch fourbox_odometry fourbox_odometry.launch.py
 
 # Teleop
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true
+
+# By-Path адрес устройства
+ls -la /dev/serial/by-path/
 ```
 
 ## 🗺️ Topics
